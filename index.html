@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>JQM Carousel - Simple Demo</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet"  href="//code.jquery.com/mobile/git/jquery.mobile-git.css"> 
+  <script src="//code.jquery.com/jquery-1.10.1.js"></script> 
+  <script src="//code.jquery.com/mobile/git/jquery.mobile-git.js"></script> 
+
+  <style>
+.ui-carousel {
+	list-style: none outside none;
+	margin: 0 auto;
+	padding: 0;
+	position: relative;
+	text-align: center;
+	width: auto;
+	height: inherit;
+	min-height: inherit;
+	overflow: hidden;
+}
+.ui-carousel li {
+	-webkit-border-radius: inherit;
+	-moz-border-radius: inherit;
+	border-radius: inherit;
+	display: none;
+	list-style: none outside none;
+	overflow: inherit;
+	position: absolute;
+	width: 100%;
+}
+.ui-carousel-inset {
+	margin: 1em auto;
+	-webkit-border-radius: 1em;
+	-moz-border-radius: 1em;
+	border-radius: 1em;
+}
+.ui-carousel li.ui-carousel-transitioning {
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+}
+.ui-carousel li.ui-carousel-active {
+	display: block;
+}
+.ui-carousel li a {
+	-webkit-border-radius: inherit;
+	-moz-border-radius: inherit;
+	border-radius: inherit;
+	overflow: inherit;
+}
+.ui-carousel img {
+	width: 100%;
+	display: block;
+	-webkit-border-radius: inherit;
+	-moz-border-radius: inherit;
+	border-radius: inherit;
+	min-height: inherit;
+}
+.ui-carousel-controls {
+	text-align: center;
+}
+.ui-carousel-controls .ui-radio {
+	display: inline-block;
+	padding: 0 0.25em;
+}
+.ui-carousel-captions .ui-carousel-captions-heading {
+	margin: 0;
+	padding: 0;
+}
+.ui-carousel-captions-content {
+	left: 0;
+	margin: 0;
+	padding: 0.5em 0;
+	position: absolute;
+	right: 0;
+}
+.ui-carousel-captions-bottom {
+	bottom: 0;
+}
+.ui-carousel-captions-top {
+	top: 0;
+}
+	</style>
+</head>
+<body>
+ 
+<div data-role="page">
+
+	<div data-role="header">
+		<h1>Carousel Demo</h1>
+	</div><!-- /header -->
+	
+	<div data-role="content" id="content">
+		
+		<div style="width: 400px; height: 400px; display: inline-block;">
+			<ul data-role="carousel"data-captions="true" data-inset="true" data-shadow="true">
+				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/lumia_800.png"/><h1>Nokia Lumia </h1></a></li>
+				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/galaxy_express.png"/><h1>Samsung Galaxy </h1></a></li>
+				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/firefox_os.png"/><h1>Firefox Phone </h1></a></li>
+			</ul>
+		</div>
+	 
+		
+	</div><!-- /content -->
+
+</div><!-- /page -->
+	<script type="text/javascript">
+    (function( $, undefined ) {
+
+$.widget( "mobile.carousel", $.extend( {
+
+	options: {
+		enhanced: false,
+		barrel: null,
+		bullets: true,
+		bulletsPos: "bottom",
+		transition: "slide"
+	},
+
+	_create: function () {
+		this.refresh( true );
+	},
+
+	refresh: function ( create ) {
+		var el = this.element,
+			o = this.options;
+
+		if ( !o.enhanced ) {
+			// clear barrel on refesh
+			if ( !create ) {
+				$( "#ui-carousel-barrel-" + this.uuid ).remove();
+			}
+			// generate UI and barrel and append to DOM
+			this._enhance( el, o );
+			el[ o.bulletsPos === "top" ? "before" : "after" ]( this._barrel );
+		} else {
+			this._barrel = $( "#" + o.barrel );
+		}
+
+		this._on( this._barrel.find( "input" ), { 
+			"change": "_onChange"
+		});
+
+		this._on( el, {
+			"keypress": "_onKeyPress",
+			"swipeleft": "_prev",
+			"swiperight": "_next"
+		});
+
+		// always focus on refresh
+		el.focus();
+	},
+
+	_onKeyPress: function ( e ) {
+		switch (e.keyCode) {
+			case $.mobile.keyCode.LEFT: this._jump( 0 ); break;
+			case $.mobile.keyCode.RIGHT: this._jump( 1 ); break;
+		}
+	},
+
+	_jump: function ( sibling ) {
+		var el = this.element,
+			active = el.find( ".ui-carousel-active" ),
+			method = sibling > 0 ? "next" : "prev";
+		this._transition( active, active[ method ]( "li" ), this.options.transition )
+	},
+
+	_onChange: function ( e ) {
+		var el = this.element,
+			o = this.options,
+			events = this._transitionEndEvents,
+			current = el.children().filter( ".ui-carousel-active" ),
+			currentActive = current.add( current.find( ".ui-carousel-captions-content" ) ), 
+			next = $( e.target ).data( "reference" ),
+			nextActive = next.add( next.find( ".ui-carousel-captions-content" ) );
+
+		// click on active
+		if ( nextActive.hasClass( "ui-carousel-active" ) ) {
+			el.focus();
+			return;
+		}
+
+		this._transition( currentActive, nextActive, o.transition )
+		el.focus();
+	},
+
+	_transition: function ( currentActive, nextActive, set_transition ) {
+		var transition = $.mobile._maybeDegradeTransition( set_transition );
+
+		this._transitionClasses = transition + " in out ";
+
+		currentActive.addClass( transition + " out" );
+		nextActive
+			.addClass( transition + " in ui-carousel-active" )
+			.animationComplete( function () {
+				nextActive.removeClass( transition + " in " );
+				currentActive.removeClass( transition + " ui-carousel-active in out" );
+			});
+	}
+}, $.mobile.behaviors.addFirstLastClasses ) );
+
+})( jQuery );
+
+(function( $, undefined ) {
+
+$.widget( "mobile.carousel", $.mobile.carousel, {
+	options: {
+		corners: false,
+		captions: false,
+		captionpos: "bottom",
+		captiontheme: "a",
+		heading: "h1,h2,h3,h4,h5,h6,legend",
+		inset: false,
+		shadow: false
+	},
+
+	_enhance: function ( el, o ) {
+		var i, item, radio, label, barrel, containsLink, captionsHeading, prefix,
+			captionsContent,
+			id = this.uuid,
+			items = el.children(),
+			len = items.length,
+			carouselClasses = "ui-carousel ",
+			fragment = document.createDocumentFragment(),
+			prefix = 'radio-' + id,
+			emptyString = "";
+
+		for ( i = 0; i < len; i += 1 ) {
+			item = items[i];
+
+			// captions
+			if ( o.captions ) {
+				containsLink = item.children[ 0 ].tagName === "A";
+				captionsContent = $( item )
+					.find( containsLink ? "a *" : "*" )
+					.not( "img" )
+					.wrap( "<div class='ui-carousel-captions-content ui-bar-" + 
+							o.captiontheme + " ui-carousel-captions-" + 
+									o.captionpos + "'></div>")
+					.parent();
+				captionsHeading = captionsContent
+					.find( o.heading )
+					.addClass( "ui-carousel-captions-heading" );
+			}
+
+			// radios bullets
+			if ( o.bullets ) {
+				label = $( "<label data-" + $.mobile.ns + "-iconpos='notext'></label>" );
+				radio = $( "<input type='radio' name='" + prefix + "' value='" + 
+						prefix + "-" + i + "'/>" )
+						// set item as reference
+						.data( "reference", $( item ) );
+
+				if ( i === 0 ) {
+					radio.prop('checked', true);
+					$( item ).addClass( "ui-carousel-active" );
+				}
+				label.append( radio );
+				fragment.appendChild( label[0] );
+			}
+		}
+
+		carouselClasses += o.captions ? " ui-carousel-captions" : emptyString;
+		carouselClasses += o.inset ? " ui-carousel-inset" : emptyString;
+
+		if ( !!o.inset ) {
+			carouselClasses += o.corners ? " ui-corner-all" : emptyString;
+			carouselClasses += o.shadow ? " ui-shadow" : emptyString;
+		}
+
+		if ( o.bullets ) {
+			carouselClasses += " ui-carousel-bullets";
+			barrel = $( "<div id='ui-carousel-barrel-" + id + "' class='" +
+					"ui-carousel-controls ui-carousel-controls-" + o.bulletsPos + 
+							"'></div>");
+			while ( fragment.firstChild ) {
+				$( fragment.firstChild ).children().checkboxradio();
+				barrel.append(fragment.firstChild);
+			}
+			this._barrel = barrel;
+		}
+
+		// setting tabindex -1 allows to focus programmatically
+		el.addClass( carouselClasses ).attr("tabindex", -1);
+	}
+});
+
+})( jQuery );
+
+  </script>
+</body>
+</html>
