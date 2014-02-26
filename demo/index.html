@@ -159,8 +159,8 @@ $.widget( "mobile.carousel", $.extend( {
 
 	_onKeyPress: function ( e ) {
 		switch (e.keyCode) {
-			case $.mobile.keyCode.LEFT: this._getNext( -1 ); break;
-			case $.mobile.keyCode.RIGHT: this._getNext( 1 ); break;
+			case $.mobile.keyCode.LEFT: this._getNext( 1 ); break;
+			case $.mobile.keyCode.RIGHT: this._getNext( -1 ); break;
 		}
 	},
 
@@ -197,7 +197,7 @@ $.widget( "mobile.carousel", $.extend( {
 			default: go = new_index;
 		}
 
-		this._barrel.find( "input" ).eq( go ).trigger( "change" ).checkboxradio( "refresh" );
+		this._barrel.find( "input" ).eq( go ).trigger( "change" );
 	},
 
 	_transition: function ( currentActive, nextActive, set_transition ) {
