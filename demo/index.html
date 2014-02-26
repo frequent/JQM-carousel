@@ -19,6 +19,7 @@
 	height: inherit;
 	min-height: inherit;
 	overflow: hidden;
+	outline: 0;
 }
 .ui-carousel li {
 	-webkit-border-radius: inherit;
@@ -140,13 +141,13 @@ $.widget( "mobile.carousel", $.extend( {
 		}
 
 		this._on( this._barrel.find( "input" ), { 
-			"change": "_onChange"
+			"change": "_change"
 		});
 
 		this._on( el, {
 			"keypress": "_onKeyPress",
-			"swipeleft": "_prev",
-			"swiperight": "_next"
+			"swipeleft": function () { this._getNext( -1 ); },
+			"swiperight": function () { this._getNext( 1 ); }
 		});
 
 		// always focus on refresh
@@ -155,19 +156,12 @@ $.widget( "mobile.carousel", $.extend( {
 
 	_onKeyPress: function ( e ) {
 		switch (e.keyCode) {
-			case $.mobile.keyCode.LEFT: this._jump( 0 ); break;
-			case $.mobile.keyCode.RIGHT: this._jump( 1 ); break;
+			case $.mobile.keyCode.LEFT: this._getNext( -1 ); break;
+			case $.mobile.keyCode.RIGHT: this._getNext( 1 ); break;
 		}
 	},
 
-	_jump: function ( sibling ) {
-		var el = this.element,
-			active = el.find( ".ui-carousel-active" ),
-			method = sibling > 0 ? "next" : "prev";
-		this._transition( active, active[ method ]( "li" ), this.options.transition )
-	},
-
-	_onChange: function ( e ) {
+	_change: function ( e ) {
 		var el = this.element,
 			o = this.options,
 			events = this._transitionEndEvents,
@@ -186,10 +180,24 @@ $.widget( "mobile.carousel", $.extend( {
 		el.focus();
 	},
 
+	_getNext: function ( increment ) {
+		var go,
+			$inputs = this._barrel.find( "input" ),
+			len = $inputs.length,
+			new_index = $inputs.index( ".ui-carousel-active" ) + increment;
+
+		// allow rotation
+		switch ( true ) {
+			case new_index < 0: go = len - 1; break;
+			case new_index > len: go = 0; break;
+			default: go = new_index;
+		}
+
+		this._barrel.find( "input" ).eq( go ).trigger( "change" );
+	},
+
 	_transition: function ( currentActive, nextActive, set_transition ) {
 		var transition = $.mobile._maybeDegradeTransition( set_transition );
-
-		this._transitionClasses = transition + " in out ";
 
 		currentActive.addClass( transition + " out" );
 		nextActive
@@ -247,14 +255,13 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 
 			// radios bullets
 			if ( o.bullets ) {
-				label = $( "<label data-" + $.mobile.ns + "-iconpos='notext'></label>" );
+				label = $( "<label data-" + $.mobile.ns + "iconpos='notext'></label>" );
 				radio = $( "<input type='radio' name='" + prefix + "' value='" + 
 						prefix + "-" + i + "'/>" )
 						// set item as reference
 						.data( "reference", $( item ) );
 
 				if ( i === 0 ) {
-					radio.prop('checked', true);
 					$( item ).addClass( "ui-carousel-active" );
 				}
 				label.append( radio );
