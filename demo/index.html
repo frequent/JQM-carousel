@@ -185,9 +185,10 @@ $.widget( "mobile.carousel", $.extend( {
 
 	_getNext: function ( increment ) {
 		var go,
-			$inputs = this._barrel.find( "input" ),
-			len = $inputs.length,
-			new_index = $inputs.index( ".ui-carousel-active" ) + increment;
+			el = this.element,
+			$li = el.find( "li" ),
+			len = $li.length,
+			new_index = $li.index( el.find( "li.ui-carousel-active" ) ) + increment;
 
 		// allow rotation
 		switch ( true ) {
@@ -196,7 +197,7 @@ $.widget( "mobile.carousel", $.extend( {
 			default: go = new_index;
 		}
 
-		this._barrel.find( "input" ).eq( go ).trigger( "change" );
+		this._barrel.find( "input" ).eq( go ).trigger( "change" ).checkboxradio( "refresh" );
 	},
 
 	_transition: function ( currentActive, nextActive, set_transition ) {
@@ -265,6 +266,7 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 						.data( "reference", $( item ) );
 
 				if ( i === 0 ) {
+					radio.prop( "checked", true );
 					$( item ).addClass( "ui-carousel-active" );
 				}
 				label.append( radio );
