@@ -153,14 +153,13 @@ $.widget( "mobile.carousel", $.extend( {
 			"swiperight": function () { this._getNext( 1 ); }
 		});
 
-		// always focus on refresh
-		el.focus();
+		this._items = this._getItems( "li" );
 	},
 
 	_onKeyPress: function ( e ) {
 		switch (e.keyCode) {
-			case $.mobile.keyCode.LEFT: this._getNext( 1 ); break;
-			case $.mobile.keyCode.RIGHT: this._getNext( -1 ); break;
+			case $.mobile.keyCode.LEFT: this._getNext( -1 ); break;
+			case $.mobile.keyCode.RIGHT: this._getNext( 1 ); break;
 		}
 	},
 
@@ -179,29 +178,32 @@ $.widget( "mobile.carousel", $.extend( {
 			return;
 		}
 
-		this._transition( currentActive, nextActive, o.transition )
+		this._transition( currentActive, nextActive )
 		el.focus();
+	},
+
+	_getItems: function ( selector ) {
+		return this.element.find( selector );
 	},
 
 	_getNext: function ( increment ) {
 		var go,
 			el = this.element,
-			$li = el.find( "li" ),
-			len = $li.length,
-			new_index = $li.index( el.find( "li.ui-carousel-active" ) ) + increment;
+			len = this._items.length,
+			new_index = this._items.index( this._getItems( "li.ui-carousel-active" ) ) + increment;
 
 		// allow rotation
 		switch ( true ) {
 			case new_index < 0: go = len - 1; break;
-			case new_index > len: go = 0; break;
+			case new_index > len - 1: go = 0; break;
 			default: go = new_index;
 		}
 
-		this._barrel.find( "input" ).eq( go ).trigger( "change" );
+		this._barrel.find( "input" ).eq( go ).trigger( "click" );
 	},
 
-	_transition: function ( currentActive, nextActive, set_transition ) {
-		var transition = $.mobile._maybeDegradeTransition( set_transition );
+	_transition: function ( currentActive, nextActive ) {
+		var transition = $.mobile._maybeDegradeTransition( this.options.transition );
 
 		currentActive.addClass( transition + " out" );
 		nextActive
@@ -260,8 +262,8 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 			// radios bullets
 			if ( o.bullets ) {
 				label = $( "<label data-" + $.mobile.ns + "iconpos='notext'></label>" );
-				radio = $( "<input type='radio' name='" + prefix + "' value='" + 
-						prefix + "-" + i + "'/>" )
+				radio = $( "<input type='radio' name='" + prefix + "' id='" +
+						prefix + "-" + i + "' value='" + i + "'/>" )
 						// set item as reference
 						.data( "reference", $( item ) );
 
