@@ -111,7 +111,7 @@
 
 </div><!-- /page -->
 	<script type="text/javascript">
-    (function( $, undefined ) {
+(function( $, undefined ) {
 
 $.widget( "mobile.carousel", $.extend( {
 
@@ -149,17 +149,18 @@ $.widget( "mobile.carousel", $.extend( {
 
 		this._on( el, {
 			"keypress": "_onKeyPress",
-			"swipeleft": function () { this._getNext( -1 ); },
-			"swiperight": function () { this._getNext( 1 ); }
+			"swipeleft": function () { this.jump( -1 ); },
+			"swiperight": function () { this.jump( 1 ); }
 		});
 
 		this._items = this._getItems( "li" );
+		this._len = this._items.length;
 	},
 
 	_onKeyPress: function ( e ) {
 		switch (e.keyCode) {
-			case $.mobile.keyCode.LEFT: this._getNext( -1 ); break;
-			case $.mobile.keyCode.RIGHT: this._getNext( 1 ); break;
+			case $.mobile.keyCode.LEFT: this.jump( -1 ); break;
+			case $.mobile.keyCode.RIGHT: this.jump( 1 ); break;
 		}
 	},
 
@@ -186,17 +187,14 @@ $.widget( "mobile.carousel", $.extend( {
 		return this.element.find( selector );
 	},
 
-	_getNext: function ( increment ) {
-		var go,
-			el = this.element,
-			len = this._items.length,
-			new_index = this._items.index( this._getItems( "li.ui-carousel-active" ) ) + increment;
+	jump: function ( increment ) {
+		var len = this._len,
+			go = this._items.index( this._getItems( "li.ui-carousel-active" ) ) + increment;
 
 		// allow rotation
 		switch ( true ) {
-			case new_index < 0: go = len - 1; break;
-			case new_index > len - 1: go = 0; break;
-			default: go = new_index;
+			case go < 0: go = len - 1; break;
+			case go > len - 1: go = 0; break;
 		}
 
 		this._barrel.find( "input" ).eq( go ).trigger( "click" );
@@ -289,11 +287,7 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 			barrel = $( "<div id='ui-carousel-barrel-" + id + "' class='" +
 					"ui-carousel-controls ui-carousel-controls-" + o.bulletsPos + 
 							"'></div>");
-			while ( fragment.firstChild ) {
-				$( fragment.firstChild ).children().checkboxradio();
-				barrel.append(fragment.firstChild);
-			}
-			this._barrel = barrel;
+			this._barrel = barrel.append( fragment ).enhanceWithin();
 		}
 
 		// setting tabindex -1 allows to focus programmatically
