@@ -197,7 +197,7 @@ $.widget( "mobile.carousel", $.extend( {
 			case go > len - 1: go = 0; break;
 		}
 
-		this._barrel.find( "input" ).eq( go ).trigger( "click" );
+		this._barrel.find( "input" ).eq( go ).trigger( "click" ).checkboxradio( "refresh" );
 	},
 
 	_transition: function ( currentActive, nextActive ) {
@@ -266,7 +266,7 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 						.data( "reference", $( item ) );
 
 				if ( i === 0 ) {
-					radio.prop( "checked", true );
+					radio.attr( "checked", true );
 					$( item ).addClass( "ui-carousel-active" );
 				}
 				label.append( radio );
