@@ -144,17 +144,18 @@ $.widget( "mobile.carousel", $.extend( {
 		}
 
 		this._on( this._barrel.find( "input" ), { 
-			"change": "_change"
+			"click": "_change"
 		});
 
 		this._on( el, {
 			"keypress": "_onKeyPress",
-			"swipeleft": function () { this.jump( -1 ); },
-			"swiperight": function () { this.jump( 1 ); }
+			"swipeleft": function () { this.jump( 1 ); },
+			"swiperight": function () { this.jump( -1 ); }
 		});
 
 		this._items = this._getItems( "li" );
 		this._len = this._items.length;
+		this._direction = "";
 	},
 
 	_onKeyPress: function ( e ) {
@@ -196,18 +197,19 @@ $.widget( "mobile.carousel", $.extend( {
 			case go < 0: go = len - 1; break;
 			case go > len - 1: go = 0; break;
 		}
-
+		this._direction = increment > 0 ? "" : " reverse ";
 		this._barrel.find( "input" ).eq( go ).trigger( "click" ).checkboxradio( "refresh" );
 	},
 
 	_transition: function ( currentActive, nextActive ) {
-		var transition = $.mobile._maybeDegradeTransition( this.options.transition );
+		var transition = $.mobile._maybeDegradeTransition( this.options.transition ),
+			inbound = transition + this._direction + " in ";
 
 		currentActive.addClass( transition + " out" );
 		nextActive
-			.addClass( transition + " in ui-carousel-active" )
+			.addClass( inbound + " ui-carousel-active" )
 			.animationComplete( function () {
-				nextActive.removeClass( transition + " in " );
+				nextActive.removeClass( inbound );
 				currentActive.removeClass( transition + " ui-carousel-active in out" );
 			});
 	}
