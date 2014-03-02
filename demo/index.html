@@ -45,13 +45,15 @@
 .ui-carousel li.ui-carousel-active {
 	display: block;
 }
+.ui-carousel .ui-carousel-selector.ui-carousel-active {
+	display: table;
+}
 .ui-carousel li a {
 	-webkit-border-radius: inherit;
 	-moz-border-radius: inherit;
 	border-radius: inherit;
 	overflow: auto;
 	width: 100%;
-	display: table;
 	text-decoration: none;
 }
 .ui-carousel img {
@@ -115,9 +117,9 @@
 
 		<div style="width: 400px; height: 400px; display: inline-block;">
 			<ul data-role="carousel" data-captions="true" data-inset="true" data-shadow="true">
-				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/lumia_800.png"/><h1>Nokia Lumia </h1></a></li>
-				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/galaxy_express.png"/><h1>Samsung Galaxy </h1></a></li>
-				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/firefox_os.png"/><h1>Firefox Phone </h1></a></li>
+				<li><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/lumia_800.png"/><h1>Nokia Lumia </h1></li>
+				<li><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/galaxy_express.png"/><h1>Samsung Galaxy </h1></li>
+				<li><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/firefox_os.png"/><h1>Firefox Phone </h1></li>
 			</ul>
 		</div>
 	 
@@ -262,6 +264,7 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 				$selector = containsLink ? $( item ).find( "a" )  : $( item );
 
 				$selector
+					.addClass( "ui-carousel-selector" )
 					.children()
 					.not( "img" )
 					.wrap( "<span class='ui-carousel-captions-content ui-bar-" + 
