@@ -57,6 +57,7 @@
 .ui-carousel img {
 	width: 100%;
 	display: table-row-group;
+	float: left; /* fix for gap made by Firefox */
 }
 .ui-carousel-controls {
 	text-align: center;
@@ -162,7 +163,7 @@ $.widget( "mobile.carousel", $.extend( {
 		});
 
 		this._on( el, {
-			"keypress": "_onKeyPress",
+			"keydown": "_onKeyPress",
 			"swipeleft": function () { this.jump( 1 ); },
 			"swiperight": function () { this.jump( -1 ); }
 		});
