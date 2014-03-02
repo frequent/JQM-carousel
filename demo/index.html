@@ -45,9 +45,6 @@
 .ui-carousel li.ui-carousel-active {
 	display: block;
 }
-.ui-carousel .ui-carousel-selector.ui-carousel-active {
-	display: table;
-}
 .ui-carousel li a {
 	-webkit-border-radius: inherit;
 	-moz-border-radius: inherit;
@@ -61,6 +58,11 @@
 	display: table-row-group;
 	float: left; /* fix for gap made by Firefox */
 }
+.ui-carousel-inset img {
+	-webkit-border-radius: inherit;
+	border-radius: inherit;
+}
+/* Radios */
 .ui-carousel-controls {
 	text-align: center;
 }
@@ -71,6 +73,10 @@
 .ui-carousel-controls .ui-radio label:after {
 	left: .2em;
 }
+/* Captions */
+.ui-carousel .ui-carousel-selector.ui-carousel-active {
+	display: table;
+}
 .ui-carousel-captions .ui-carousel-captions-heading {
 	margin: 0;
 	padding: 0;
@@ -80,16 +86,6 @@
 }
 .ui-carousel-captions-bottom ~ img {
 	margin-top: -2.5em;
-}
-.ui-carousel-captions-top {
-	display: table-header-group;
-}
-.ui-carousel-captions-top ~ img {
-	margin-bottom: -2.5em;
-}
-.ui-carousel-inset img {
-	-webkit-border-radius: inherit;
-	border-radius: inherit;
 }
 .ui-carousel-inset .ui-carousel-captions-top ~ img {
 	-webkit-border-top-left-radius: 0;
@@ -102,6 +98,18 @@
 	border-bottom-left-radius: 0;
 	-webkit-border-bottom-right-radius: 0;
 	border-bottom-right-radius: 0;
+}
+/* handles */
+.ui-carousel .ui-carousel-handle {
+	position: absolute;
+	width: 1.75em;
+	top: 43%;
+}
+.ui-carousel .ui-carousel-handle.ui-carousel-handle-left {
+	left: 0;
+}
+.ui-carousel .ui-carousel-handle.ui-carousel-handle-right {
+	right: 0;
 }
 	</style>
 </head>
@@ -132,7 +140,9 @@
 $.widget( "mobile.carousel", $.extend( {
 
 	options: {
+		thumbnail: false,
 		enhanced: false,
+		handles: null,
 		barrel: null,
 		bullets: true,
 		bulletsPos: "bottom",
@@ -289,6 +299,12 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 				}
 				label.append( radio );
 				fragment.appendChild( label[0] );
+			}
+
+			// handlers
+			if ( o.handles ) {
+				// handles and barrel should be assigned with the same context set by the user in case data-enhanced = true
+				//<a class="ui-carousel-handle ui-carousel-handle-left ui-btn ui-btn-icon-notext ui-icon-arrow-l ui-shadow" href="#">Left</a>
 			}
 		}
 
