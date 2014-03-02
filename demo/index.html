@@ -49,15 +49,14 @@
 	-webkit-border-radius: inherit;
 	-moz-border-radius: inherit;
 	border-radius: inherit;
-	overflow: inherit;
+	overflow: auto;
+	width: 100%;
+	display: table;
+	text-decoration: none;
 }
 .ui-carousel img {
 	width: 100%;
-	display: block;
-	-webkit-border-radius: inherit;
-	-moz-border-radius: inherit;
-	border-radius: inherit;
-	min-height: inherit;
+	display: table-row-group;
 }
 .ui-carousel-controls {
 	text-align: center;
@@ -73,18 +72,33 @@
 	margin: 0;
 	padding: 0;
 }
-.ui-carousel-captions-content {
-	left: 0;
-	margin: 0;
-	padding: 0.5em 0;
-	position: absolute;
-	right: 0;
-}
 .ui-carousel-captions-bottom {
-	bottom: 0;
+	display: table-footer-group;
+}
+.ui-carousel-captions-bottom ~ img {
+	margin-top: -2.5em;
 }
 .ui-carousel-captions-top {
-	top: 0;
+	display: table-header-group;
+}
+.ui-carousel-captions-top ~ img {
+	margin-bottom: -2.5em;
+}
+.ui-carousel-inset img {
+	-webkit-border-radius: inherit;
+	border-radius: inherit;
+}
+.ui-carousel-inset .ui-carousel-captions-top ~ img {
+	-webkit-border-top-left-radius: 0;
+	border-top-left-radius: 0;
+	-webkit-border-top-right-radius: 0;
+	border-top-right-radius: 0;
+}
+.ui-carousel-inset .ui-carousel-captions-bottom ~ img {
+	-webkit-border-bottom-left-radius: 0;
+	border-bottom-left-radius: 0;
+	-webkit-border-bottom-right-radius: 0;
+	border-bottom-right-radius: 0;
 }
 	</style>
 </head>
@@ -97,7 +111,7 @@
 	</div><!-- /header -->
 	
 	<div data-role="content" id="content">
-		
+
 		<div style="width: 400px; height: 400px; display: inline-block;">
 			<ul data-role="carousel" data-captions="true" data-inset="true" data-shadow="true">
 				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/lumia_800.png"/><h1>Nokia Lumia </h1></a></li>
@@ -169,10 +183,8 @@ $.widget( "mobile.carousel", $.extend( {
 		var el = this.element,
 			o = this.options,
 			events = this._transitionEndEvents,
-			current = el.children().filter( ".ui-carousel-active" ),
-			currentActive = current.add( current.find( ".ui-carousel-captions-content" ) ), 
-			next = $( e.target ).data( "reference" ),
-			nextActive = next.add( next.find( ".ui-carousel-captions-content" ) );
+			currentActive = el.children().filter( ".ui-carousel-active" ), 
+			nextActive = $( e.target ).data( "reference" );
 
 		// click on active
 		if ( nextActive.hasClass( "ui-carousel-active" ) ) {
@@ -203,14 +215,14 @@ $.widget( "mobile.carousel", $.extend( {
 
 	_transition: function ( currentActive, nextActive ) {
 		var transition = $.mobile._maybeDegradeTransition( this.options.transition ),
-			inbound = transition + this._direction + " in ";
+			bound = transition + this._direction;
 
-		currentActive.addClass( transition + " out" );
+		currentActive.addClass( bound + " out " );
 		nextActive
-			.addClass( inbound + " ui-carousel-active" )
+			.addClass( bound + " in ui-carousel-active" )
 			.animationComplete( function () {
-				nextActive.removeClass( inbound );
-				currentActive.removeClass( transition + " ui-carousel-active in out" );
+				nextActive.removeClass( bound + " in ");
+				currentActive.removeClass( bound + " ui-carousel-active out" );
 			});
 	}
 }, $.mobile.behaviors.addFirstLastClasses ) );
@@ -231,8 +243,7 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 	},
 
 	_enhance: function ( el, o ) {
-		var i, item, radio, label, barrel, containsLink, captionsHeading, prefix,
-			captionsContent,
+		var i, item, radio, label, barrel, containsLink, prefix, $selector,
 			id = this.uuid,
 			items = el.children(),
 			len = items.length,
@@ -247,16 +258,18 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 			// captions
 			if ( o.captions ) {
 				containsLink = item.children[ 0 ].tagName === "A";
-				captionsContent = $( item )
-					.find( containsLink ? "a *" : "*" )
+				$selector = containsLink ? $( item ).find( "a" )  : $( item );
+
+				$selector
+					.children()
 					.not( "img" )
-					.wrap( "<div class='ui-carousel-captions-content ui-bar-" + 
+					.wrap( "<span class='ui-carousel-captions-content ui-bar-" + 
 							o.captiontheme + " ui-carousel-captions-" + 
-									o.captionpos + "'></div>")
-					.parent();
-				captionsHeading = captionsContent
-					.find( o.heading )
-					.addClass( "ui-carousel-captions-heading" );
+									o.captionpos + "'></span>")
+					.parent()
+					.prependTo( $selector )
+						.find( o.heading )
+						.addClass( "ui-carousel-captions-heading" );
 			}
 
 			// radios bullets
