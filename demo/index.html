@@ -30,6 +30,7 @@
 	overflow: inherit;
 	position: absolute;
 	width: 100%;
+	height: 100%;
 }
 .ui-carousel-inset {
 	margin: 1em auto;
@@ -50,7 +51,8 @@
 	-moz-border-radius: inherit;
 	border-radius: inherit;
 	overflow: auto;
-	width: 100%;
+	width: inherit;
+	height: inherit;
 	text-decoration: none;
 }
 .ui-carousel img {
@@ -74,7 +76,7 @@
 	left: .2em;
 }
 /* Captions */
-.ui-carousel .ui-carousel-selector.ui-carousel-active {
+.ui-carousel .ui-carousel-active .ui-carousel-selector {
 	display: table;
 }
 .ui-carousel-captions .ui-carousel-captions-heading {
@@ -100,16 +102,16 @@
 	border-bottom-right-radius: 0;
 }
 /* handles */
-.ui-carousel .ui-carousel-handle {
-	position: absolute;
-	width: 1.75em;
-	top: 43%;
+.ui-carousel.ui-carousel-handles,
+.ui-carousel-handle-left,
+.ui-carousel-handle-right {
+	margin: 0 1%;
+	vertical-align: middle;
+	display: inline-block;
 }
-.ui-carousel .ui-carousel-handle.ui-carousel-handle-left {
-	left: 0;
-}
-.ui-carousel .ui-carousel-handle.ui-carousel-handle-right {
-	right: 0;
+.ui-carousel.ui-carousel-handles {
+	margin: 0;
+	width: 80%;
 }
 	</style>
 </head>
@@ -142,7 +144,7 @@ $.widget( "mobile.carousel", $.extend( {
 	options: {
 		thumbnail: false,
 		enhanced: false,
-		handles: null,
+		handles: true,
 		barrel: null,
 		bullets: true,
 		bulletsPos: "bottom",
@@ -164,7 +166,7 @@ $.widget( "mobile.carousel", $.extend( {
 			}
 			// generate UI and barrel and append to DOM
 			this._enhance( el, o );
-			el[ o.bulletsPos === "top" ? "before" : "after" ]( this._barrel );
+			el.parent()[ o.bulletsPos === "top" ? "prepend" : "append" ]( this._barrel );
 		} else {
 			this._barrel = $( "#" + o.barrel );
 		}
@@ -178,6 +180,15 @@ $.widget( "mobile.carousel", $.extend( {
 			"swipeleft": function () { this.jump( 1 ); },
 			"swiperight": function () { this.jump( -1 ); }
 		});
+
+		if ( o.handles ) {
+			this._on( el.parent().find( "a.ui-carousel-handle" ), {
+				"click": function ( event ) {
+					console.log(event)
+					this.jump( $( event.target ).is( "ui-carousel-handle-left" ) ? -1 : 1 );
+				}
+			});
+		}
 
 		this._items = this._getItems( "li" );
 		this._len = this._items.length;
@@ -222,6 +233,12 @@ $.widget( "mobile.carousel", $.extend( {
 			case go > len - 1: go = 0; break;
 		}
 		this._direction = increment > 0 ? "" : " reverse ";
+
+		// provide hook to modify slide
+		if ( this._trigger( "beforejump", event, eventData ) === false ) {
+			return false;
+		}
+
 		this._barrel.find( "input" ).eq( go ).trigger( "click" ).checkboxradio( "refresh" );
 	},
 
@@ -247,11 +264,19 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 	options: {
 		corners: false,
 		captions: false,
-		captionpos: "bottom",
+		captionpos: "top",
 		captiontheme: "a",
 		heading: "h1,h2,h3,h4,h5,h6,legend",
 		inset: false,
 		shadow: false
+	},
+
+	_addButton: function ( left ) {
+		var arr = left ? ["Left", "left", "l"] : ["Right", "right", "r"];
+
+		return $( '<a class="ui-carousel-handle ui-carousel-handle-' + arr[1] + 
+			' ui-btn ui-btn-icon-notext ui-corner-all ui-icon-carat-' + arr[2] + 
+					' ui-shadow href="#">' + arr[0] + '</a>');
 	},
 
 	_enhance: function ( el, o ) {
@@ -263,6 +288,13 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 			fragment = document.createDocumentFragment(),
 			prefix = 'radio-' + id,
 			emptyString = "";
+
+		// handlers
+		if ( o.handles && len > 0 ) {
+			carouselClasses += " ui-carousel-handles";
+			el.before( this._addButton( true ) )
+				.after( this._addButton() );
+		}
 
 		for ( i = 0; i < len; i += 1 ) {
 			item = items[i];
@@ -276,9 +308,9 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 					.addClass( "ui-carousel-selector" )
 					.children()
 					.not( "img" )
-					.wrap( "<span class='ui-carousel-captions-content ui-bar-" + 
+					.wrap( "<div class='ui-carousel-captions-content ui-bar-" + 
 							o.captiontheme + " ui-carousel-captions-" + 
-									o.captionpos + "'></span>")
+									o.captionpos + "'></div>")
 					.parent()
 					.prependTo( $selector )
 						.find( o.heading )
@@ -299,12 +331,6 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 				}
 				label.append( radio );
 				fragment.appendChild( label[0] );
-			}
-
-			// handlers
-			if ( o.handles ) {
-				// handles and barrel should be assigned with the same context set by the user in case data-enhanced = true
-				//<a class="ui-carousel-handle ui-carousel-handle-left ui-btn ui-btn-icon-notext ui-icon-arrow-l ui-shadow" href="#">Left</a>
 			}
 		}
 
