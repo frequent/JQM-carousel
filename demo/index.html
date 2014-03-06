@@ -57,7 +57,6 @@
 }
 .ui-carousel img {
 	width: 100%;
-	height: inherit;
 	display: table-row-group;
 	float: left; /* fix for gap made by Firefox */
 }
@@ -109,13 +108,35 @@
 .ui-carousel.ui-carousel-handles,
 .ui-carousel-handle-left,
 .ui-carousel-handle-right {
-	margin: 0 1%;
+	margin: 0 .5%;
 	vertical-align: middle;
 	display: inline-block;
 }
 .ui-carousel.ui-carousel-handles {
 	margin: 0;
 	width: 80%;
+}
+.ui-carousel.ui-carousel-handles li img {
+	height: inherit;
+}
+/* thumbnails */
+.ui-carousel.ui-carousel-thumbnails {
+	display: table-row;
+	height: auto;
+}
+.ui-carousel.ui-carousel-thumbnails li {
+	width: auto;
+	display: table-cell;
+	padding: .25em;
+	position: static;
+}
+.ui-carousel.ui-carousel-thumbnails li img {
+	display: inline-block;
+	float: none;
+	height: 99%;
+	width: auto;
+	max-width: 5em;
+	max-height: 5em;
 }
 	</style>
 </head>
@@ -137,6 +158,14 @@
 			</ul>
 		</div>
 
+		<div style="width: 400px; height: 200px; display: inline-block;">
+			<ul data-role="carousel" data-inset="true" data-shadow="true" data-thumbnails="true" data-handles="false">
+				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/lumia_800.png"/></a></li>
+				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/galaxy_express.png"/></a></li>
+				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/firefox_os.png"/></a></li>
+			</ul>
+		</div>
+
 	</div><!-- /content -->
 
 </div><!-- /page -->
@@ -146,7 +175,6 @@
 $.widget( "mobile.carousel", $.extend( {
 
 	options: {
-		thumbnail: false,
 		enhanced: false,
 		handles: true,
 		barrel: null,
@@ -271,7 +299,8 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 		captiontheme: "a",
 		heading: "h1,h2,h3,h4,h5,h6,legend",
 		inset: false,
-		shadow: false
+		shadow: false,
+		thumbnails: false
 	},
 
 	_addButton: function ( left ) {
@@ -299,41 +328,46 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 				.after( this._addButton() );
 		}
 
-		for ( i = 0; i < len; i += 1 ) {
-			item = items[i];
+		// thumbnails
+		if ( o.thumbnails ) {
+			carouselClasses += " ui-carousel-thumbnails";
+		} else {
+			for ( i = 0; i < len; i += 1 ) {
+				item = items[i];
 
-			// captions
-			if ( o.captions ) {
-				containsLink = item.children[ 0 ].tagName === "A";
-				$selector = containsLink ? $( item ).find( "a" )  : $( item );
+				// captions
+				if ( o.captions ) {
+					containsLink = item.children[ 0 ].tagName === "A";
+					$selector = containsLink ? $( item ).find( "a" )  : $( item );
 
-				$selector
-					.addClass( "ui-carousel-selector" )
-					.children()
-					.not( "img" )
-					.wrap( "<p class='ui-carousel-captions-content ui-bar-" + 
-							o.captiontheme + " ui-carousel-captions-" + 
-									o.captionpos + "'></p>")
-					.parent()
-					.prependTo( $selector )
-						.find( o.heading )
-						.addClass( "ui-carousel-captions-heading" );
-			}
-
-			// radios bullets
-			if ( o.bullets ) {
-				label = $( "<label data-" + $.mobile.ns + "iconpos='notext'></label>" );
-				radio = $( "<input type='radio' name='" + prefix + "' id='" +
-						prefix + "-" + i + "' value='" + i + "'/>" )
-						// set item as reference
-						.data( "reference", $( item ) );
-
-				if ( i === 0 ) {
-					radio.attr( "checked", true );
-					$( item ).addClass( "ui-carousel-active" );
+					$selector
+						.addClass( "ui-carousel-selector" )
+						.children()
+						.not( "img" )
+						.wrap( "<p class='ui-carousel-captions-content ui-bar-" + 
+								o.captiontheme + " ui-carousel-captions-" + 
+										o.captionpos + "'></p>")
+						.parent()
+						.prependTo( $selector )
+							.find( o.heading )
+							.addClass( "ui-carousel-captions-heading" );
 				}
-				label.append( radio );
-				fragment.appendChild( label[0] );
+
+				// radios bullets
+				if ( o.bullets ) {
+					label = $( "<label data-" + $.mobile.ns + "iconpos='notext'></label>" );
+					radio = $( "<input type='radio' name='" + prefix + "' id='" +
+							prefix + "-" + i + "' value='" + i + "'/>" )
+							// set item as reference
+							.data( "reference", $( item ) );
+
+					if ( i === 0 ) {
+						radio.attr( "checked", true );
+						$( item ).addClass( "ui-carousel-active" );
+					}
+					label.append( radio );
+					fragment.appendChild( label[0] );
+				}
 			}
 		}
 
