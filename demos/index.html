@@ -18,19 +18,29 @@
 	width: auto;
 	height: inherit;
 	min-height: inherit;
-	overflow: hidden;
 	outline: 0;
+
+	overflow: hidden; /* firefox seems the only browser to properly overflow-hide round corners... */
+	/* 
+	display: table-row-group; 
+	*/
+	margin: 0 -15px;
 }
 .ui-carousel li {
+	display: none;
+	position: absolute;
+	list-style: none outside none;
 	-webkit-border-radius: inherit;
 	-moz-border-radius: inherit;
 	border-radius: inherit;
-	display: none;
-	list-style: none outside none;
 	overflow: inherit;
-	position: absolute;
 	width: 100%;
 	height: inherit;
+	/*
+	width: auto;
+	height: 100%;
+	min-height: inherit;
+	*/
 }
 .ui-carousel-inset {
 	margin: 1em auto;
@@ -50,15 +60,28 @@
 	-webkit-border-radius: inherit;
 	-moz-border-radius: inherit;
 	border-radius: inherit;
-	overflow: auto;
-	width: inherit;
 	height: inherit;
 	text-decoration: none;
+	overflow: auto;
+	width: inherit;
+/*
+	overflow: inherit;
+	min-height: inherit;
+	width: 100%;
+*/
+
 }
 .ui-carousel img {
 	width: 100%;
 	display: table-row-group;
 	float: left; /* fix for gap made by Firefox */
+
+	-webkit-border-radius: inherit;
+	-moz-border-radius: inherit;
+	border-radius: inherit;
+/*
+	min-height: inherit;
+*/
 }
 .ui-carousel-inset img {
 	-webkit-border-radius: inherit;
@@ -86,6 +109,9 @@
 	margin: 0;
 	padding: 0;
 }
+.ui-carousel-captions-top {
+	display: table-header-group;
+}
 .ui-carousel-captions-bottom {
 	display: table-footer-group;
 }
@@ -108,11 +134,17 @@
 .ui-carousel.ui-carousel-handles,
 .ui-carousel-handle-left,
 .ui-carousel-handle-right {
-	margin: 0 .5%;
 	vertical-align: middle;
+}
+.ui-carousel-handle-left {
+	margin-right: .5em;
 	display: inline-block;
 }
-.ui-carousel.ui-carousel-handles {
+.ui-carousel-handle-right {
+	margin-left: .5em;
+	display: inline-block;
+}
+.ui-carousel.ui-carousel-inset.ui-carousel-handles {
 	margin: 0;
 	width: 80%;
 }
@@ -121,8 +153,7 @@
 }
 /* thumbnails */
 .ui-carousel.ui-carousel-thumbnails {
-	display: table-row;
-	height: auto;
+	display: table;
 }
 .ui-carousel.ui-carousel-thumbnails li {
 	width: auto;
@@ -133,10 +164,9 @@
 .ui-carousel.ui-carousel-thumbnails li img {
 	display: inline-block;
 	float: none;
-	height: 99%;
-	width: auto;
-	max-width: 5em;
 	max-height: 5em;
+	min-height: 5em;
+	width: auto;
 }
 	</style>
 </head>
@@ -150,22 +180,22 @@
 	
 	<div data-role="content" id="content">
 
-		<div style="width: 400px; height: 400px; display: inline-block;">
+		<!-- <div style="width: 400px; height: 400px; display: inline-block;"> -->
+
 			<ul data-role="carousel" data-captions="true" data-inset="true" data-shadow="true">
 				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/lumia_800.png"/><h1>Nokia Lumia </h1></a></li>
 				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/galaxy_express.png"/><h1>Samsung Galaxy </h1></a></li>
 				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/firefox_os.png"/><h1>Firefox Phone </h1></a></li>
 			</ul>
-		</div>
+		<!-- </div> -->
 
-		<div style="width: 400px; height: 200px; display: inline-block;">
+		<!-- <div style="width: 400px; height: 200px; display: inline-block;"> -->
 			<ul data-role="carousel" data-inset="true" data-shadow="true" data-thumbnails="true" data-handles="false">
 				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/lumia_800.png"/></a></li>
 				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/galaxy_express.png"/></a></li>
 				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/firefox_os.png"/></a></li>
 			</ul>
-		</div>
-
+		<!-- </div> -->
 	</div><!-- /content -->
 
 </div><!-- /page -->
@@ -190,28 +220,31 @@ $.widget( "mobile.carousel", $.extend( {
 	refresh: function ( create ) {
 		var el = this.element,
 			o = this.options;
-
-		if ( !o.enhanced ) {
-			// clear barrel on refesh
-			if ( !create ) {
-				$( "#ui-carousel-barrel-" + this.uuid ).remove();
+		if ( !o.thumbnails ) {
+			if ( !o.enhanced ) {
+				// clear barrel on refesh
+				if ( !create ) {
+					$( "#ui-carousel-barrel-" + this.uuid ).remove();
+				}
+				// generate UI and barrel and append to DOM
+				this._enhance( el, o );
+				el.parent()[ o.bulletsPos === "top" ? "prepend" : "append" ]( this._barrel );
+			} else {
+				this._barrel = $( "#" + o.barrel );
 			}
-			// generate UI and barrel and append to DOM
-			this._enhance( el, o );
-			el.parent()[ o.bulletsPos === "top" ? "prepend" : "append" ]( this._barrel );
+
+			this._on( this._barrel.find( "input" ), { 
+				"click": "_change"
+			});
+
+			this._on( el, {
+				"keydown": "_onKeyPress",
+				"swipeleft": function () { this.jump( 1 ); },
+				"swiperight": function () { this.jump( -1 ); }
+			});
 		} else {
-			this._barrel = $( "#" + o.barrel );
+			this._enhance( el, o );
 		}
-
-		this._on( this._barrel.find( "input" ), { 
-			"click": "_change"
-		});
-
-		this._on( el, {
-			"keydown": "_onKeyPress",
-			"swipeleft": function () { this.jump( 1 ); },
-			"swiperight": function () { this.jump( -1 ); }
-		});
 
 		if ( o.handles ) {
 			this._on( el.parent().find( "a.ui-carousel-handle" ), {
@@ -379,14 +412,13 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 			carouselClasses += o.shadow ? " ui-shadow" : emptyString;
 		}
 
-		if ( o.bullets ) {
+		if ( o.bullets && !o.thumbnails ) {
 			carouselClasses += " ui-carousel-bullets";
 			barrel = $( "<div id='ui-carousel-barrel-" + id + "' class='" +
 					"ui-carousel-controls ui-carousel-controls-" + o.bulletsPos + 
 							"'></div>");
 			this._barrel = barrel.append( fragment ).enhanceWithin();
 		}
-
 		// setting tabindex -1 allows to focus programmatically
 		el.addClass( carouselClasses ).attr("tabindex", -1);
 	}
