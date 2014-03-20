@@ -13,22 +13,17 @@
 	list-style: none outside none;
 	margin: 0 auto;
 	padding: 0;
-	position: relative;
 	text-align: center;
-	width: auto;
-	height: inherit;
 	min-height: inherit;
+	height: inherit;
 	outline: 0;
-
 	overflow: hidden; /* firefox seems the only browser to properly overflow-hide round corners... */
-	/* 
-	display: table-row-group; 
-	*/
 	margin: 0 -15px;
+	display: inline-block;
+	white-space: nowrap;
 }
 .ui-carousel li {
-	display: none;
-	position: absolute;
+	display: inline-block;
 	list-style: none outside none;
 	-webkit-border-radius: inherit;
 	-moz-border-radius: inherit;
@@ -36,25 +31,28 @@
 	overflow: inherit;
 	width: 100%;
 	height: inherit;
-	/*
-	width: auto;
-	height: 100%;
-	min-height: inherit;
-	*/
+	position: relative;
+}
+.ui-carousel li:not(.ui-carousel-active) {
+	right: 200%;
+}
+.ui-carousel li.ui-carousel-active:nth-child(1):nth-last-child(3),
+.ui-carousel li.ui-carousel-active:nth-child(1):nth-last-child(3) ~ li {
+	right: 0%;
+}
+.ui-carousel li.ui-carousel-active:nth-child(2):nth-last-child(2),
+.ui-carousel li.ui-carousel-active:nth-child(2):nth-last-child(2) ~ li {
+	right: 100%;
+}
+.ui-carousel li.ui-carousel-active:nth-child(3):nth-last-child(1),
+.ui-carousel li.ui-carousel-active:nth-child(3):nth-last-child(1) ~ li {
+	right: 200%;
 }
 .ui-carousel-inset {
 	margin: 1em auto;
 	-webkit-border-radius: 1em;
 	-moz-border-radius: 1em;
 	border-radius: 1em;
-}
-.ui-carousel li.ui-carousel-transitioning {
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-}
-.ui-carousel li.ui-carousel-active {
-	display: block;
 }
 .ui-carousel li a {
 	-webkit-border-radius: inherit;
@@ -64,24 +62,14 @@
 	text-decoration: none;
 	overflow: auto;
 	width: inherit;
-/*
-	overflow: inherit;
-	min-height: inherit;
-	width: 100%;
-*/
-
 }
 .ui-carousel img {
 	width: 100%;
 	display: table-row-group;
 	float: left; /* fix for gap made by Firefox */
-
 	-webkit-border-radius: inherit;
 	-moz-border-radius: inherit;
 	border-radius: inherit;
-/*
-	min-height: inherit;
-*/
 }
 .ui-carousel-inset img {
 	-webkit-border-radius: inherit;
@@ -146,7 +134,6 @@
 }
 .ui-carousel.ui-carousel-inset.ui-carousel-handles {
 	margin: 0;
-	width: 80%;
 }
 .ui-carousel.ui-carousel-handles li img {
 	height: inherit;
