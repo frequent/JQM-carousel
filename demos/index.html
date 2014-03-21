@@ -33,41 +33,8 @@
 	height: inherit;
 	position: relative;
 }
-/* image a,b,c, pos:right in percentages, |0| is active
-		200		100		|0|	-100		-200
-								|a|		 b		c
-					 a		|b|		 c
-		 a		 b		|c|
 
-.ui-carousel li.ui-carousel-active:nth-child(1):nth-last-child(3) {
-	right: 0%;
-}
-.ui-carousel li.ui-carousel-active:nth-child(1):nth-last-child(3) ~ li:nth-child(2):nth-last-child(2) {
-	right: 0%;
-}
-.ui-carousel li.ui-carousel-active:nth-child(1):nth-last-child(3) ~ li:nth-child(3):nth-last-child(1) {
-	right: 0%;
-}
-.ui-carousel li:not(.ui-carousel-active):nth-child(1):nth-last-child(3) {
-	right: 100%;
-}
-.ui-carousel li.ui-carousel-active:nth-child(2):nth-last-child(2) {
-	right: 100%;
-}
-.ui-carousel li.ui-carousel-active:nth-child(2):nth-last-child(2) ~ li:nth-child(3):nth-last-child(1) {
-	right: 100%;
-}
-.ui-carousel li:not(.ui-carousel-active):nth-child(1):nth-last-child(3) {
-	right: 200%;
-}
-.ui-carousel li:not(.ui-carousel-active):nth-child(2):nth-last-child(2) {
-	right: 200%;
-}
-.ui-carousel li.ui-carousel-active:nth-child(3):nth-last-child(1) {
-	right: 200%;
-}
-
-*/
+/* CSS slides for 3 images */
 .ui-carousel li:not(.ui-carousel-active) {
 	right: -200%;
 }
@@ -78,19 +45,16 @@
 	right: 100%;
 }
 .ui-carousel li.ui-carousel-active:nth-child(2):nth-last-child(2),
-.ui-carousel li.ui-carousel-active:nth-child(2):nth-last-child(2) ~ li {
+.ui-carousel li.ui-carousel-active:nth-child(2):nth-last-child(2) ~ li:first-child {
 	right: 100%;
 }
-.ui-carousel li.ui-carousel-active:nth-child(3):nth-last-child(1),
-.ui-carousel li.ui-carousel-active:nth-child(3):nth-last-child(1) ~ li {
+.ui-carousel li:nth-child(3):nth-last-child(1) {
+	right: -300%;
+}
+.ui-carousel li.ui-carousel-active:nth-child(3):nth-last-child(1) {
 	right: 200%;
 }
-.ui-carousel li:last-child {
-	right: -300% !important;
-}
-.ui-carousel li.ui-carousel-active:last-child {
-	right: 200% !important;
-}
+
 .ui-carousel-inset {
 	margin: 1em auto;
 	-webkit-border-radius: 1em;
