@@ -4,9 +4,9 @@
   <title>JQM Carousel - Simple Demo</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet"  href="//code.jquery.com/mobile/git/jquery.mobile-git.css"> 
-  <script src="//code.jquery.com/jquery-1.10.1.js"></script> 
-  <script src="//code.jquery.com/mobile/git/jquery.mobile-git.js"></script> 
+  <link rel="stylesheet"  href="ext/libs/jqm/jqm.css"> 
+  <script src="ext/libs/jquery/jquery.js"></script> 
+  <script src="ext/libs/jqm/jqm.js"></script> 
 
   <style>
 .ui-carousel {
@@ -34,11 +34,13 @@
 	position: relative;
 }
 .ui-carousel li:not(.ui-carousel-active) {
-	right: 200%;
+	right: -200%;
 }
-.ui-carousel li.ui-carousel-active:nth-child(1):nth-last-child(3),
-.ui-carousel li.ui-carousel-active:nth-child(1):nth-last-child(3) ~ li {
+.ui-carousel li.ui-carousel-active:nth-child(1):nth-last-child(3) {
 	right: 0%;
+},
+.ui-carousel li.ui-carousel-active:nth-child(1):nth-last-child(3) ~ li {
+	right: 100%;
 }
 .ui-carousel li.ui-carousel-active:nth-child(2):nth-last-child(2),
 .ui-carousel li.ui-carousel-active:nth-child(2):nth-last-child(2) ~ li {
@@ -170,17 +172,17 @@
 		<!-- <div style="width: 400px; height: 400px; display: inline-block;"> -->
 
 			<ul data-role="carousel" data-captions="true" data-inset="true" data-shadow="true">
-				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/lumia_800.png"/><h1>Nokia Lumia </h1></a></li>
-				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/galaxy_express.png"/><h1>Samsung Galaxy </h1></a></li>
-				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/firefox_os.png"/><h1>Firefox Phone </h1></a></li>
+				<li><a href="#"><img alt="" src="img/lumia_800.png"/><h1>Nokia Lumia </h1></a></li>
+				<li><a href="#"><img alt="" src="img/galaxy_express.png"/><h1>Samsung Galaxy </h1></a></li>
+				<li><a href="#"><img alt="" src="img/firefox_os.png"/><h1>Firefox Phone </h1></a></li>
 			</ul>
 		<!-- </div> -->
 
 		<!-- <div style="width: 400px; height: 200px; display: inline-block;"> -->
 			<ul data-role="carousel" data-inset="true" data-shadow="true" data-thumbnails="true" data-handles="false">
-				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/lumia_800.png"/></a></li>
-				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/galaxy_express.png"/></a></li>
-				<li><a href="#"><img alt="" src="http://view.jquerymobile.com/master/demos/_assets/img/firefox_os.png"/></a></li>
+				<li><a href="#"><img alt="" src="img/lumia_800.png"/></a></li>
+				<li><a href="#"><img alt="" src="img/galaxy_express.png"/></a></li>
+				<li><a href="#"><img alt="" src="img/firefox_os.png"/></a></li>
 			</ul>
 		<!-- </div> -->
 	</div><!-- /content -->
@@ -301,8 +303,8 @@ $.widget( "mobile.carousel", $.extend( {
 		nextActive
 			.addClass( bound + " in ui-carousel-active" )
 			.animationComplete( function () {
-				nextActive.removeClass( bound + " in ");
 				currentActive.removeClass( bound + " ui-carousel-active out" );
+				nextActive.removeClass( bound + " in ");
 			});
 	}
 }, $.mobile.behaviors.addFirstLastClasses ) );
