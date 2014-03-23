@@ -18,28 +18,31 @@ $.widget( "mobile.carousel", $.extend( {
 	refresh: function ( create ) {
 		var el = this.element,
 			o = this.options;
-
-		if ( !o.enhanced ) {
-			// clear barrel on refesh
-			if ( !create ) {
-				$( "#ui-carousel-barrel-" + this.uuid ).remove();
+		if ( !o.thumbnails ) {
+			if ( !o.enhanced ) {
+				// clear barrel on refesh
+				if ( !create ) {
+					$( "#ui-carousel-barrel-" + this.uuid ).remove();
+				}
+				// generate UI and barrel and append to DOM
+				this._enhance( el, o );
+				el.parent()[ o.bulletsPos === "top" ? "prepend" : "append" ]( this._barrel );
+			} else {
+				this._barrel = $( "#" + o.barrel );
 			}
-			// generate UI and barrel and append to DOM
-			this._enhance( el, o );
-			el.parent()[ o.bulletsPos === "top" ? "prepend" : "append" ]( this._barrel );
+
+			this._on( this._barrel.find( "input" ), { 
+				"click": "_change"
+			});
+
+			this._on( el, {
+				"keydown": "_onKeyPress",
+				"swipeleft": function () { this.jump( 1 ); },
+				"swiperight": function () { this.jump( -1 ); }
+			});
 		} else {
-			this._barrel = $( "#" + o.barrel );
+			this._enhance( el, o );
 		}
-
-		this._on( this._barrel.find( "input" ), { 
-			"click": "_change"
-		});
-
-		this._on( el, {
-			"keydown": "_onKeyPress",
-			"swipeleft": function () { this.jump( 1 ); },
-			"swiperight": function () { this.jump( -1 ); }
-		});
 
 		if ( o.handles ) {
 			this._on( el.parent().find( "a.ui-carousel-handle" ), {
@@ -109,8 +112,8 @@ $.widget( "mobile.carousel", $.extend( {
 		nextActive
 			.addClass( bound + " in ui-carousel-active" )
 			.animationComplete( function () {
-				nextActive.removeClass( bound + " in ");
 				currentActive.removeClass( bound + " ui-carousel-active out" );
+				nextActive.removeClass( bound + " in ");
 			});
 	}
 }, $.mobile.behaviors.addFirstLastClasses ) );
@@ -131,12 +134,13 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 		thumbnails: false
 	},
 
-	_addButton: function ( left ) {
+	_addButton: function ( inset, left ) {
 		var arr = left ? ["Left", "left", "l"] : ["Right", "right", "r"];
 
 		return $( '<a class="ui-carousel-handle ui-carousel-handle-' + arr[1] + 
 			' ui-btn ui-btn-icon-notext ui-corner-all ui-icon-carat-' + arr[2] + 
-					' ui-shadow href="#">' + arr[0] + '</a>');
+					' ui-shadow ' + ( inset ? 'ui-carousel-handle-inset' : '' ) + 
+					'" href="#">' + arr[0] + '</a>');
 	},
 
 	_enhance: function ( el, o ) {
@@ -152,8 +156,8 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 		// handlers
 		if ( o.handles && len > 0 ) {
 			carouselClasses += " ui-carousel-handles";
-			el.before( this._addButton( true ) )
-				.after( this._addButton() );
+			el.after( this._addButton( o.inset, true ) )
+				.after( this._addButton( o.inset ) );
 		}
 
 		// thumbnails
@@ -207,14 +211,13 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 			carouselClasses += o.shadow ? " ui-shadow" : emptyString;
 		}
 
-		if ( o.bullets ) {
+		if ( o.bullets && !o.thumbnails ) {
 			carouselClasses += " ui-carousel-bullets";
 			barrel = $( "<div id='ui-carousel-barrel-" + id + "' class='" +
 					"ui-carousel-controls ui-carousel-controls-" + o.bulletsPos + 
 							"'></div>");
 			this._barrel = barrel.append( fragment ).enhanceWithin();
 		}
-
 		// setting tabindex -1 allows to focus programmatically
 		el.addClass( carouselClasses ).attr("tabindex", -1);
 	}

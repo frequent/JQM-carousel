@@ -2,57 +2,66 @@
 	list-style: none outside none;
 	margin: 0 auto;
 	padding: 0;
-	position: relative;
 	text-align: center;
-	width: auto;
-	height: inherit;
 	min-height: inherit;
-	overflow: hidden;
-	outline: 0;
-}
-.ui-carousel li {
-	-webkit-border-radius: inherit;
-	-moz-border-radius: inherit;
-	border-radius: inherit;
-	display: none;
-	list-style: none outside none;
-	overflow: inherit;
-	position: absolute;
-	width: 100%;
 	height: inherit;
+	outline: 0;
+	overflow: hidden;
+	margin: 0 -15px;
+	white-space: nowrap;
 }
 .ui-carousel-inset {
 	margin: 1em auto;
 	-webkit-border-radius: 1em;
-	-moz-border-radius: 1em;
 	border-radius: 1em;
 }
-.ui-carousel li.ui-carousel-transitioning {
-	-webkit-box-sizing: border-box;
-	-moz-box-sizing: border-box;
-	box-sizing: border-box;
-}
-.ui-carousel li.ui-carousel-active {
-	display: block;
+.ui-carousel li {
+	display: inline-block;
+	list-style: none outside none;
+	-webkit-border-radius: inherit;
+	border-radius: inherit;
+	overflow: inherit;
+	width: 100%;
+	height: inherit;
+	position: relative;
 }
 .ui-carousel li a {
 	-webkit-border-radius: inherit;
-	-moz-border-radius: inherit;
 	border-radius: inherit;
-	overflow: auto;
-	width: inherit;
 	height: inherit;
 	text-decoration: none;
+	overflow: auto;
+	width: inherit;
 }
 .ui-carousel img {
 	width: 100%;
 	display: table-row-group;
-	float: left; /* fix for gap made by Firefox */
-}
-.ui-carousel-inset img {
+	float: left; /* fix gap made by Firefox */
 	-webkit-border-radius: inherit;
 	border-radius: inherit;
 }
+
+/* Transition positioning (1-3 images only at the moment) */
+.ui-carousel li:not(.ui-carousel-active) {
+	right: -200%;
+}
+.ui-carousel li.ui-carousel-active:nth-child(1):nth-last-child(3) {
+	right: 0%;
+},
+.ui-carousel li.ui-carousel-active:nth-child(1):nth-last-child(3) ~ li {
+	right: 100%;
+}
+.ui-carousel li.ui-carousel-active:nth-child(2):nth-last-child(2),
+.ui-carousel li.ui-carousel-active:nth-child(2):nth-last-child(2) ~ li:first-child {
+	right: 100%;
+}
+.ui-carousel li:nth-child(3):nth-last-child(1) {
+	right: -300%;
+}
+.ui-carousel li.ui-carousel-active:nth-child(3):nth-last-child(1) {
+	right: 200%;
+}
+
 /* Radios */
 .ui-carousel-controls {
 	text-align: center;
@@ -64,6 +73,7 @@
 .ui-carousel-controls .ui-radio label:after {
 	left: .2em;
 }
+
 /* Captions */
 .ui-carousel .ui-carousel-active .ui-carousel-selector {
 	display: table;
@@ -75,11 +85,11 @@
 	margin: 0;
 	padding: 0;
 }
+.ui-carousel-captions-top {
+	display: table-header-group;
+}
 .ui-carousel-captions-bottom {
 	display: table-footer-group;
-}
-.ui-carousel-captions-bottom ~ img {
-	margin-top: -2.5em;
 }
 .ui-carousel-inset .ui-carousel-captions-top ~ img {
 	-webkit-border-top-left-radius: 0;
@@ -93,25 +103,54 @@
 	-webkit-border-bottom-right-radius: 0;
 	border-bottom-right-radius: 0;
 }
+
 /* handles */
-.ui-carousel.ui-carousel-handles,
-.ui-carousel-handle-left,
-.ui-carousel-handle-right {
-	margin: 0 .5%;
-	vertical-align: middle;
-	display: inline-block;
-}
-.ui-carousel.ui-carousel-handles {
-	margin: 0;
-	width: 80%;
-}
 .ui-carousel.ui-carousel-handles li img {
 	height: inherit;
 }
+.ui-carousel.ui-carousel-inset.ui-carousel-handles {
+	max-width: 93%;
+}
+.ui-carousel.ui-carousel-inset.ui-carousel-handles,
+.ui-carousel-handle-left,
+.ui-carousel-handle-right {
+	vertical-align: middle;
+}
+.ui-carousel-handle-left.ui-carousel-handle-inset {
+	margin-right: .25em;
+	display: inline-block;
+}
+.ui-carousel-handle-right.ui-carousel-handle-inset {
+	margin-left: .25em;
+	display: inline-block;
+}
+.ui-carousel-handle-left:not(.ui-carousel-handle-inset) {
+	-webkit-border-bottom-left-radius: 0;
+	border-bottom-left-radius: 0;
+	-webkit-border-top-left-radius: 0;
+	border-top-left-radius: 0;
+	margin: -60% 0 0 -1.25em;
+	float: left;
+	display: inline-block;
+	padding: 0.5em;
+}
+.ui-carousel-handle-right:not(.ui-carousel-handle-inset) {
+	-webkit-border-bottom-right-radius: 0;
+	border-bottom-right-radius: 0;
+	-webkit-border-top-right-radius: 0;
+	border-top-right-radius: 0;
+	margin: -60% -1.25em 0 0;
+	float: right;
+	display: inline-block;
+	padding: 0.5em;
+}
+.ui-carousel.ui-carousel-inset.ui-carousel-handles {
+	margin: 0;
+}
+
 /* thumbnails */
 .ui-carousel.ui-carousel-thumbnails {
-	display: table-row;
-	height: auto;
+	display: table;
 }
 .ui-carousel.ui-carousel-thumbnails li {
 	width: auto;
@@ -122,8 +161,7 @@
 .ui-carousel.ui-carousel-thumbnails li img {
 	display: inline-block;
 	float: none;
-	height: 99%;
-	width: auto;
-	max-width: 5em;
 	max-height: 5em;
+	min-height: 5em;
+	width: auto;
 }
