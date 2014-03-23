@@ -1,4 +1,4 @@
-(function( $, undefined ) {
+function( $, undefined ) {
 
 $.widget( "mobile.carousel", $.extend( {
 
@@ -66,8 +66,6 @@ $.widget( "mobile.carousel", $.extend( {
 
 	_change: function ( e ) {
 		var el = this.element,
-			o = this.options,
-			events = this._transitionEndEvents,
 			currentActive = el.children().filter( ".ui-carousel-active" ), 
 			nextActive = $( e.target ).data( "reference" );
 
@@ -77,7 +75,7 @@ $.widget( "mobile.carousel", $.extend( {
 			return;
 		}
 
-		this._transition( currentActive, nextActive )
+		this._transition( currentActive, nextActive );
 		el.focus();
 	},
 
@@ -144,7 +142,7 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 	},
 
 	_enhance: function ( el, o ) {
-		var i, item, radio, label, barrel, containsLink, prefix, $selector,
+		var i, item, radio, label, barrel, containsLink, $selector,
 			id = this.uuid,
 			items = el.children(),
 			len = items.length,
