@@ -49,8 +49,6 @@ Documentation
   * **[data-handles=true]** - add left/right buttons (default _false_)
   * **[data-enhanced=true]** - provide a pre-enhanced version of the gallery
 
-You can also find the documentaiton [here](http://frequent.github.io/documentation.html).
-
 There are two modes to view a carousel, **thumbnail** and **regular**. To create
 a thumbnail list of all images in your carousel, add the `data-thumbnail` attribute.
 Please note that thumbnail carousels have no functionalities. 
@@ -74,7 +72,6 @@ to hook into the carousel, just bind to this event like this:
 
 ### Examples
 
-You can find a list of examples showing all features [here](http://frequent.github.io/examples.html).
 The demos can be found in the `demos/` folder.
 
 
