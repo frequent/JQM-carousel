@@ -19,14 +19,12 @@
 	outline: 0;
 	overflow: hidden; /* firefox seems the only browser to properly overflow-hide round corners... */
 	margin: 0 -15px;
-	display: inline-block;
 	white-space: nowrap;
 }
 .ui-carousel li {
 	display: inline-block;
 	list-style: none outside none;
 	-webkit-border-radius: inherit;
-	-moz-border-radius: inherit;
 	border-radius: inherit;
 	overflow: inherit;
 	width: 100%;
@@ -58,12 +56,10 @@
 .ui-carousel-inset {
 	margin: 1em auto;
 	-webkit-border-radius: 1em;
-	-moz-border-radius: 1em;
 	border-radius: 1em;
 }
 .ui-carousel li a {
 	-webkit-border-radius: inherit;
-	-moz-border-radius: inherit;
 	border-radius: inherit;
 	height: inherit;
 	text-decoration: none;
@@ -75,7 +71,6 @@
 	display: table-row-group;
 	float: left; /* fix for gap made by Firefox */
 	-webkit-border-radius: inherit;
-	-moz-border-radius: inherit;
 	border-radius: inherit;
 }
 .ui-carousel-inset img {
@@ -110,9 +105,6 @@
 .ui-carousel-captions-bottom {
 	display: table-footer-group;
 }
-.ui-carousel-captions-bottom ~ img {
-	margin-top: -2.5em;
-}
 .ui-carousel-inset .ui-carousel-captions-top ~ img {
 	-webkit-border-top-left-radius: 0;
 	border-top-left-radius: 0;
@@ -126,24 +118,47 @@
 	border-bottom-right-radius: 0;
 }
 /* handles */
-.ui-carousel.ui-carousel-handles,
+.ui-carousel.ui-carousel-handles li img {
+	height: inherit;
+}
+.ui-carousel.ui-carousel-inset.ui-carousel-handles {
+	max-width: 93%;
+}
+.ui-carousel.ui-carousel-inset.ui-carousel-handles,
 .ui-carousel-handle-left,
 .ui-carousel-handle-right {
 	vertical-align: middle;
 }
-.ui-carousel-handle-left {
-	margin-right: .5em;
+.ui-carousel-handle-left.ui-carousel-handle-inset {
+	margin-right: .25em;
 	display: inline-block;
 }
-.ui-carousel-handle-right {
-	margin-left: .5em;
+.ui-carousel-handle-right.ui-carousel-handle-inset {
+	margin-left: .25em;
 	display: inline-block;
+}
+.ui-carousel-handle-left:not(.ui-carousel-handle-inset) {
+	-webkit-border-bottom-left-radius: 0;
+	border-bottom-left-radius: 0;
+	-webkit-border-top-left-radius: 0;
+	border-top-left-radius: 0;
+	margin: -60% 0 0 -1.25em;
+	float: left;
+	display: inline-block;
+	padding: 0.5em;
+}
+.ui-carousel-handle-right:not(.ui-carousel-handle-inset) {
+	-webkit-border-bottom-right-radius: 0;
+	border-bottom-right-radius: 0;
+	-webkit-border-top-right-radius: 0;
+	border-top-right-radius: 0;
+	margin: -60% -1.25em 0 0;
+	float: right;
+	display: inline-block;
+	padding: 0.5em;
 }
 .ui-carousel.ui-carousel-inset.ui-carousel-handles {
 	margin: 0;
-}
-.ui-carousel.ui-carousel-handles li img {
-	height: inherit;
 }
 /* thumbnails */
 .ui-carousel.ui-carousel-thumbnails {
@@ -176,7 +191,7 @@
 
 		<!-- <div style="width: 400px; height: 400px; display: inline-block;"> -->
 
-			<ul data-role="carousel" data-captions="true" data-inset="true" data-shadow="true">
+			<ul data-role="carousel" data-captions="true" data-shadow="true">
 				<li><a href="#"><img alt="" src="img/lumia_800.png"/><h1>Nokia Lumia </h1></a></li>
 				<li><a href="#"><img alt="" src="img/galaxy_express.png"/><h1>Samsung Galaxy </h1></a></li>
 				<li><a href="#"><img alt="" src="img/firefox_os.png"/><h1>Firefox Phone </h1></a></li>
@@ -184,7 +199,7 @@
 		<!-- </div> -->
 
 		<!-- <div style="width: 400px; height: 200px; display: inline-block;"> -->
-			<ul data-role="carousel" data-inset="true" data-shadow="true" data-thumbnails="true" data-handles="false">
+			<ul data-role="carousel" data-shadow="true" data-thumbnails="true" data-handles="false">
 				<li><a href="#"><img alt="" src="img/lumia_800.png"/></a></li>
 				<li><a href="#"><img alt="" src="img/galaxy_express.png"/></a></li>
 				<li><a href="#"><img alt="" src="img/firefox_os.png"/></a></li>
@@ -330,12 +345,13 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 		thumbnails: false
 	},
 
-	_addButton: function ( left ) {
+	_addButton: function ( inset, left ) {
 		var arr = left ? ["Left", "left", "l"] : ["Right", "right", "r"];
 
 		return $( '<a class="ui-carousel-handle ui-carousel-handle-' + arr[1] + 
 			' ui-btn ui-btn-icon-notext ui-corner-all ui-icon-carat-' + arr[2] + 
-					' ui-shadow href="#">' + arr[0] + '</a>');
+					' ui-shadow ' + ( inset ? 'ui-carousel-handle-inset' : '' ) + 
+					'" href="#">' + arr[0] + '</a>');
 	},
 
 	_enhance: function ( el, o ) {
@@ -351,8 +367,8 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 		// handlers
 		if ( o.handles && len > 0 ) {
 			carouselClasses += " ui-carousel-handles";
-			el.before( this._addButton( true ) )
-				.after( this._addButton() );
+			el.after( this._addButton( o.inset, true ) )
+				.after( this._addButton( o.inset ) );
 		}
 
 		// thumbnails
