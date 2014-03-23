@@ -156,8 +156,8 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 		// handlers
 		if ( o.handles && len > 0 ) {
 			carouselClasses += " ui-carousel-handles";
-			el.after( this._addButton( o.inset, true ) )
-				.after( this._addButton( o.inset ) );
+			el.after( this._addButton( o.inset ) )
+				.after( this._addButton( o.inset, true ) );
 		}
 
 		// thumbnails

@@ -104,25 +104,25 @@
 	border-bottom-right-radius: 0;
 }
 
-/* handles */
+/* handles, no fan of margin-top, try vertical-align without float... */
 .ui-carousel.ui-carousel-handles li img {
 	height: inherit;
 }
 .ui-carousel.ui-carousel-inset.ui-carousel-handles {
 	max-width: 93%;
-}
-.ui-carousel.ui-carousel-inset.ui-carousel-handles,
-.ui-carousel-handle-left,
-.ui-carousel-handle-right {
-	vertical-align: middle;
+	display: inline-block;
 }
 .ui-carousel-handle-left.ui-carousel-handle-inset {
 	margin-right: .25em;
 	display: inline-block;
+	float: left;
+	margin-top: 50%;
 }
 .ui-carousel-handle-right.ui-carousel-handle-inset {
 	margin-left: .25em;
 	display: inline-block;
+	float: right;
+	margin-top: 50%;
 }
 .ui-carousel-handle-left:not(.ui-carousel-handle-inset) {
 	-webkit-border-bottom-left-radius: 0;
