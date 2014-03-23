@@ -9,8 +9,7 @@ Simple demo can be found here: [JSBIN](http://jsbin.com/ofuhaw/1283/)
 Another Carousel Plugin?
 -------------
 Yep. This one fully based on jQuery Mobile, so you can use all the goodness
-provided by JQM and don't need to add any other 3rd party plugins. Use it
-for images, content, what you want.
+provided by JQM and don't need to add any other 3rd party plugins.
 
 
 How to use?
@@ -40,15 +39,15 @@ Documentation
 
 ### Attributes/Features
 
-	* **data-role=carousel**			required to initialize the carousel
-	* **[data-inset=true]**				add rounded corners (default false)[optional]
-	* **[data-shadow=true]**			add shadow (default false)[optional]
-	* **[data-transition=slide]**	JQM transition to transition between images (default slide)[optional]
-	* **[data-captions=true]**		add caption (default false)[optional]
-	* **[data-captionspos=top]**	position of caption (default top)[optional]
-	* **[data-thumbnail=true]			create a thumbnail gallery of all images[optional]
-	* **[data-handles=true]				add left/right buttons (default false)[optiona]
-	* **[data-enhanced=true]			provide a pre-enhanced version of the gallery
+  * **data-role=carousel**			required to initialize the carousel
+  * **[data-inset=true]**				add rounded corners (default false)[optional]
+  * **[data-shadow=true]**			add shadow (default false)[optional]
+  * **[data-transition=slide]**	JQM transition to transition between images (default slide)[optional]
+  * **[data-captions=true]**		add caption (default false)[optional]
+  * **[data-captionspos=top]**	position of caption (default top)[optional]
+  * **[data-thumbnail=true]			create a thumbnail gallery of all images[optional]
+  * **[data-handles=true]				add left/right buttons (default false)[optiona]
+  * **[data-enhanced=true]			provide a pre-enhanced version of the gallery
 
 You can also find the documentaiton [here](http://frequent.github.io/documentation.html).
 
