@@ -1,4 +1,4 @@
-function( $, undefined ) {
+(function( $, undefined ) {
 
 $.widget( "mobile.carousel", $.extend( {
 
@@ -66,16 +66,17 @@ $.widget( "mobile.carousel", $.extend( {
 
 	_change: function ( e ) {
 		var el = this.element,
-			currentActive = el.children().filter( ".ui-carousel-active" ), 
-			nextActive = $( e.target ).data( "reference" );
+			kids = el.children(),
+			current = kids.filter( ".ui-carousel-active" ), 
+			next = $( e.target ).data( "reference" );
 
 		// click on active
-		if ( nextActive.hasClass( "ui-carousel-active" ) ) {
+		if ( next.hasClass( "ui-carousel-active" ) ) {
 			el.focus();
 			return;
 		}
-
-		this._transition( currentActive, nextActive );
+		this._direction = kids.index( current ) > kids.index( next ) ? " reverse " : "";
+		this._transition( current, next );
 		el.focus();
 	},
 
