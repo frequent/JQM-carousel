@@ -3,7 +3,7 @@ JQM Carousel
 
 A jQuery Mobile Carousel/Gallery widget.
 
-Simple demo can be found here: [JSBIN](http://jsbin.com/ofuhaw/1284/)
+Simple demo can be found here: [JSBIN](http://jsbin.com/ofuhaw/1290/)
 
 
 Another Carousel Plugin?
