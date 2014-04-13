@@ -16,22 +16,34 @@ $.widget( "mobile.carousel", $.extend( {
 	},
 
 	refresh: function ( create ) {
-		var el = this.element,
+		var $inputs, $items, i,
+			el = this.element,
 			o = this.options;
+
 		if ( !o.thumbnails ) {
 			if ( !o.enhanced ) {
+
 				// clear barrel on refesh
 				if ( !create ) {
 					$( "#ui-carousel-barrel-" + this.uuid ).remove();
 				}
-				// generate UI and barrel and append to DOM
 				this._enhance( el, o );
 				el.parent()[ o.bulletsPos === "top" ? "prepend" : "append" ]( this._barrel );
 			} else {
 				this._barrel = $( "#" + o.barrel );
 			}
 
-			this._on( this._barrel.find( "input" ), { 
+			$inputs =  this._barrel.find( "input" );
+			$items = this._items = this._getItems( "li" );
+			this._len = $items.length;
+			this._direction = "";
+
+			// set reference on radio buttons
+			for (i = 0; i < this._len; i += 1) {
+				$inputs.eq( i ).data( "reference", $items.eq( i ) );
+			}
+
+			this._on( $inputs, {
 				"click": "_change"
 			});
 
@@ -51,10 +63,6 @@ $.widget( "mobile.carousel", $.extend( {
 				}
 			});
 		}
-
-		this._items = this._getItems( "li" );
-		this._len = this._items.length;
-		this._direction = "";
 	},
 
 	_onKeyPress: function ( e ) {
@@ -67,7 +75,7 @@ $.widget( "mobile.carousel", $.extend( {
 	_change: function ( e ) {
 		var el = this.element,
 			kids = el.children(),
-			current = kids.filter( ".ui-carousel-active" ), 
+			current = kids.filter( ".ui-carousel-active" ),
 			next = $( e.target ).data( "reference" );
 
 		// click on active
@@ -136,9 +144,9 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 	_addButton: function ( inset, left ) {
 		var arr = left ? ["Left", "left", "l"] : ["Right", "right", "r"];
 
-		return $( '<a class="ui-carousel-handle ui-carousel-handle-' + arr[1] + 
-			' ui-btn ui-btn-icon-notext ui-corner-all ui-icon-carat-' + arr[2] + 
-					' ui-shadow ' + ( inset ? 'ui-carousel-handle-inset' : '' ) + 
+		return $( '<a class="ui-carousel-handle ui-carousel-handle-' + arr[1] +
+			' ui-btn ui-btn-icon-notext ui-corner-all ui-icon-carat-' + arr[2] +
+					' ui-shadow ' + ( inset ? 'ui-carousel-handle-inset' : '' ) +
 					'" href="#">' + arr[0] + '</a>');
 	},
 
@@ -175,8 +183,8 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 						.addClass( "ui-carousel-selector" )
 						.children()
 						.not( "img" )
-						.wrap( "<p class='ui-carousel-captions-content ui-bar-" + 
-								o.captiontheme + " ui-carousel-captions-" + 
+						.wrap( "<p class='ui-carousel-captions-content ui-bar-" +
+								o.captiontheme + " ui-carousel-captions-" +
 										o.captionpos + "'></p>")
 						.parent()
 						.prependTo( $selector )
@@ -188,9 +196,7 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 				if ( o.bullets ) {
 					label = $( "<label data-" + $.mobile.ns + "iconpos='notext'></label>" );
 					radio = $( "<input type='radio' name='" + prefix + "' id='" +
-							prefix + "-" + i + "' value='" + i + "'/>" )
-							// set item as reference
-							.data( "reference", $( item ) );
+							prefix + "-" + i + "' value='" + i + "'/>" );
 
 					if ( i === 0 ) {
 						radio.attr( "checked", true );
@@ -213,7 +219,7 @@ $.widget( "mobile.carousel", $.mobile.carousel, {
 		if ( o.bullets && !o.thumbnails ) {
 			carouselClasses += " ui-carousel-bullets";
 			barrel = $( "<div id='ui-carousel-barrel-" + id + "' class='" +
-					"ui-carousel-controls ui-carousel-controls-" + o.bulletsPos + 
+					"ui-carousel-controls ui-carousel-controls-" + o.bulletsPos +
 							"'></div>");
 			this._barrel = barrel.append( fragment ).enhanceWithin();
 		}
