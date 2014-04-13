@@ -40,6 +40,7 @@ Documentation
 
   * **data-role=carousel** - required to initialize the carousel
   * **data-bullets=true** - required radio controls (unless using thumbnail mode)
+  * **[data-barrel=#id**] - radio container id, required when pre-enhancing
   * **[data-inset=true]** - add rounded corners (default _false_)
   * **[data-shadow=true]** - add shadow (default _false_)
   * **[data-transition=slide]** - JQM transition to transition between images (default _slide_)
